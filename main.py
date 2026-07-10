@@ -67,3 +67,29 @@ def get_latest_signal():
         "success": True,
         "signal": latest_signal
     }
+@app.post("/api/signals/confirm")
+def confirm_signal(data: dict):
+    global latest_signal
+
+    if latest_signal is None:
+        raise HTTPException(
+            status_code=404,
+            detail="No signal available"
+        )
+
+    received_signal_id = data.get("signal_id")
+
+    if received_signal_id != latest_signal.get("signal_id"):
+        raise HTTPException(
+            status_code=400,
+            detail="Signal ID does not match"
+        )
+
+    latest_signal["status"] = "EXECUTED"
+    latest_signal["ticket"] = data.get("ticket")
+
+    return {
+        "success": True,
+        "message": "Signal confirmed",
+        "signal": latest_signal
+    }
