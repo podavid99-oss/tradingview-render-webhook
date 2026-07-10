@@ -17,6 +17,7 @@ def home():
 
 @app.post("/webhook/tradingview")
 def receive_alert(data: dict):
+        print("TRADINGVIEW ALERT:", data, flush=True)
     received_secret = data.get("secret")
 
     if not WEBHOOK_SECRET:
