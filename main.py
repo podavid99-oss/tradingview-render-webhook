@@ -37,13 +37,15 @@ def receive_alert(data: dict):
             detail="Invalid webhook secret"
         )
 
-    latest_signal = {
-        "symbol": data.get("symbol"),
-        "timeframe": data.get("timeframe"),
-        "price": data.get("price"),
-        "action": data.get("action"),
-        "timestamp": data.get("timestamp"),
-        "status": "PENDING"
+   latest_signal = {
+    "signal_id": str(uuid.uuid4()),
+    "symbol": data.get("symbol"),
+    "timeframe": data.get("timeframe"),
+    "price": data.get("price"),
+    "action": data.get("action"),
+    "timestamp": data.get("timestamp"),
+    "status": "PENDING"
+}
     }
 
     return {
