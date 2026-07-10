@@ -1,6 +1,10 @@
-from fastapi import FastAPI
+import os
+
+from fastapi import FastAPI, HTTPException
 
 app = FastAPI()
+
+WEBHOOK_SECRET = os.getenv("WEBHOOK_SECRET", "")
 
 
 @app.get("/")
@@ -13,7 +17,22 @@ def home():
 
 @app.post("/webhook/tradingview")
 def receive_alert(data: dict):
+    received_secret = data.get("secret")
+
+    if not WEBHOOK_SECRET:
+        raise HTTPException(
+            status_code=500,
+            detail="WEBHOOK_SECRET is not configured"
+        )
+
+    if received_secret != WEBHOOK_SECRET:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid webhook secret"
+        )
+
     return {
         "success": True,
+        "message": "Alert received",
         "received": data
     }
